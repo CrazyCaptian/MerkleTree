@@ -34,15 +34,25 @@ contract AirdropToken {
     
     
    
-    bytes32 internal _merkleRoot;
+    bytes32 internal _merkleRootTop;
+    bytes32 internal _merkleRootMid;
+    bytes32 internal _merkleRootBot;
                                          
     uint256 internal nextTokenId = 0;
 
     mapping(address => bool) public hasClaimed;
+    uint256 public decay = 24* 60 * 60 * 30
+    uint256 rewardTOP = 100 * 10 ** 18;
+    
+    uint256 rewardMID = 100 * 20 ** 18;
+    
+    uint256 rewardBOT = 100 * 10 ** 18;
+    
 
-
-    constructor(string memory name, string memory symbol, bytes32 merkleRoot) ERC721(name, symbol) {
-        _merkleRoot = merkleRoot;
+    constructor(string memory name, string memory symbol, bytes32 merkleRootTop, bytes32 merkleRootMid, bytes32 merkleRootBot) ERC721(name, symbol) {
+        _merkleRootTop = merkleRootTop;
+        _merkleRootMid = merkleRootMid;
+        _merkleRootBot = merkleRootBot;
         _animationToken = animationToken;
     }  
 
@@ -51,9 +61,31 @@ contract AirdropToken {
     /**
     * @dev Mints new NFTs
     */
-    function mintWithProof(bytes32[] memory merkleProof ) public {
+    function mintWithProofTop(bytes32[] memory merkleProof ) public {
  
-        require( MerkleProof.verify(merkleProof, _merkleRoot, keccak256( abi.encodePacked(msg.sender)) ) , 'proof failure');
+        require( MerkleProof.verify(merkleProof, _merkleRootTop, keccak256( abi.encodePacked(msg.sender)) ) , 'proof failure');
+
+        require(hasClaimed[msg.sender] == false, 'already claimed');
+
+        hasClaimed[msg.sender]=true;
+        
+        _mint(msg.sender, nextTokenId++); 
+    }
+    
+    function mintWithProofMid(bytes32[] memory merkleProof ) public {
+ 
+        require( MerkleProof.verify(merkleProof, _merkleRootMid, keccak256( abi.encodePacked(msg.sender)) ) , 'proof failure');
+
+        require(hasClaimed[msg.sender] == false, 'already claimed');
+
+        hasClaimed[msg.sender]=true;
+        
+        _mint(msg.sender, nextTokenId++); 
+    }
+    
+    function mintWithProofBot(bytes32[] memory merkleProof ) public {
+ 
+        require( MerkleProof.verify(merkleProof, _merkleRootBot, keccak256( abi.encodePacked(msg.sender)) ) , 'proof failure');
 
         require(hasClaimed[msg.sender] == false, 'already claimed');
 
