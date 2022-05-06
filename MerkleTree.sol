@@ -63,7 +63,7 @@ contract AirdropToken {
     * @dev Mints new NFTs
     */
    function amountOut(uint choice) public view returns (uint256 out){.
-        var durdur = block.timestamp - starttime;
+        uint256 durdur = block.timestamp - starttime;
         if(durdur > decay){
             durdur = decay;
         }
@@ -78,7 +78,6 @@ contract AirdropToken {
    
     function mintWithProofTop(bytes32[] memory merkleProof ) public {
     
-        var durdur = block.timestamp - starttime;
         
         require( MerkleProof.verify(merkleProof, _merkleRootTop, keccak256( abi.encodePacked(msg.sender)) ) , 'proof failure');
 
@@ -86,7 +85,7 @@ contract AirdropToken {
 
         hasClaimed[msg.sender]=true;
         
-        IERC20().transfer(msg.sender,  amountOut(2));
+        IERC20(ForgeTokenAddress).transfer(msg.sender,  amountOut(1));
     }
     
     function mintWithProofMid(bytes32[] memory merkleProof ) public {
@@ -97,7 +96,7 @@ contract AirdropToken {
 
         hasClaimed[msg.sender]=true;
         
-        IERC20().transfer(msg.sender,  amountOut(2));
+        IERC20(ForgeTokenAddress).transfer(msg.sender,  amountOut(2));
     }
     
     function mintWithProofBot(bytes32[] memory merkleProof ) public {
@@ -107,8 +106,9 @@ contract AirdropToken {
         require(hasClaimed[msg.sender] == false, 'already claimed');
 
         hasClaimed[msg.sender]=true;
-        
-        _mint(msg.sender, nextTokenId++); 
+       
+
+        IERC20(ForgeTokenAddress).transfer(msg.sender,  amountOut(3));
     }
 
     function getThree() public view returns (uint256) {
