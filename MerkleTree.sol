@@ -33,7 +33,7 @@ library MerkleProof {
 contract AirdropToken {
     
     
-   
+    address public ForgeTokenAddress = "0xF44fB43066F7ECC91058E3A614Fb8A15A2735276"
     bytes32 internal _merkleRootTop;
     bytes32 internal _merkleRootMid;
     bytes32 internal _merkleRootBot;
@@ -47,6 +47,7 @@ contract AirdropToken {
     uint256 rewardMID = 100 * 20 ** 18;
     
     uint256 rewardBOT = 100 * 10 ** 18;
+    uint256 public starttime = block.timestamp;
     
 
     constructor(string memory name, string memory symbol, bytes32 merkleRootTop, bytes32 merkleRootMid, bytes32 merkleRootBot) ERC721(name, symbol) {
@@ -61,15 +62,31 @@ contract AirdropToken {
     /**
     * @dev Mints new NFTs
     */
+   function amountOut(uint choice) public view returns (uint256 out){.
+        var durdur = block.timestamp - starttime;
+        if(durdur > decay){
+            durdur = decay;
+        }
+        if(choice == 1){
+            (rewardTOP * durdur) / decay;
+        }else if(choice ==2){
+            (rewardMID * durdur) / decay;
+        }else if(choice ==3){
+            (rewardBOT * durdur) / decay;
+        }
+   }
+   
     function mintWithProofTop(bytes32[] memory merkleProof ) public {
- 
+    
+        var durdur = block.timestamp - starttime;
+        
         require( MerkleProof.verify(merkleProof, _merkleRootTop, keccak256( abi.encodePacked(msg.sender)) ) , 'proof failure');
 
         require(hasClaimed[msg.sender] == false, 'already claimed');
 
         hasClaimed[msg.sender]=true;
         
-        _mint(msg.sender, nextTokenId++); 
+        IERC20().transfer(msg.sender,  amountOut(2));
     }
     
     function mintWithProofMid(bytes32[] memory merkleProof ) public {
@@ -80,7 +97,7 @@ contract AirdropToken {
 
         hasClaimed[msg.sender]=true;
         
-        _mint(msg.sender, nextTokenId++); 
+        IERC20().transfer(msg.sender,  amountOut(2));
     }
     
     function mintWithProofBot(bytes32[] memory merkleProof ) public {
