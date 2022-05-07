@@ -121,16 +121,16 @@ contract AirdropToken {
 
 
    function amountOut(uint choice) public view returns (uint256 out){
-        uint256 durdur = block.timestamp - starttime;
+        uint256 topamt = block.timestamp - starttime;
         if(durdur > decay){
-            durdur = decay;
+            topamt = decay;
         }
         if(choice == 0){
-           return (amtClaim[0] * durdur) / decay;
+           return (amtClaim[0] * topamt) / decay;
         }else if(choice ==1){
-           return (amtClaim[1] * durdur) / decay;
+           return (amtClaim[1] * topamt) / decay;
         }else if(choice ==2){
-           return (amtClaim[2] * durdur) / decay;
+           return (amtClaim[2] * topamt) / decay;
         }
         return 0;
    }
