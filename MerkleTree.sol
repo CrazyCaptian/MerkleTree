@@ -44,7 +44,8 @@ library MerkleProof {
 contract AirdropToken {
     
     
-    address public ForgeTokenAddress = "0xF44fB43066F7ECC91058E3A614Fb8A15A2735276"
+    address public ForgeTokenAddressREAL = "0xF44fB43066F7ECC91058E3A614Fb8A15A2735276"
+    address public ForgeTokenAddress = "0xbF4493415fD1E79DcDa8cD0cAd7E5Ed65DCe7074"
     bytes32 [] public _merkleRootAll;
     bytes32 internal _merkleRootTop;
     bytes32 internal _merkleRootMid;
