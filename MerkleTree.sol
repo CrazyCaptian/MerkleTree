@@ -1,3 +1,10 @@
+// Forge Airdrop - A Airdrop for Forge Token
+// https://forgetoken.org/
+// https://airdrop.forgetoken.org/
+// Runs autonomously
+// 100, 30, or 10 Forge depending on the list
+// Stakes all tokens in the Forge Guess while awaitng payouts
+
 library MerkleProof {
     /**
      * @dev Returns true if a `leaf` can be proved to be a part of a Merkle tree
