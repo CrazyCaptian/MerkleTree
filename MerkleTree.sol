@@ -45,10 +45,12 @@ contract AirdropToken {
     
     
     address public ForgeTokenAddress = "0xF44fB43066F7ECC91058E3A614Fb8A15A2735276"
+    bytes32 [] public _merkleRootAll;
     bytes32 internal _merkleRootTop;
     bytes32 internal _merkleRootMid;
     bytes32 internal _merkleRootBot;
                                          
+    uint256 [] public amtClaim;
     uint256 internal nextTokenId = 0;
 
     mapping(address => bool) public hasClaimed;
@@ -66,6 +68,12 @@ contract AirdropToken {
         _merkleRootMid = merkleRootMid;
         _merkleRootBot = merkleRootBot;
         _animationToken = animationToken;
+        _merkleRootAll.append(merkleRootTop);
+        _merkleRootAll.append(merkleRootMid);
+        _merkleRootAll.append(merkleRootBot);
+        amtClaim.append(1000000000000);
+        amtClaim.append(100000000);
+        amtClaim.append(100000);
     }  
 
  
@@ -78,13 +86,14 @@ contract AirdropToken {
         if(durdur > decay){
             durdur = decay;
         }
-        if(choice == 1){
-            (rewardTOP * durdur) / decay;
+        if(choice == 0){
+           return (amtClaim[0] * durdur) / decay;
+        }else if(choice ==1){
+           return (amtClaim[1] * durdur) / decay;
         }else if(choice ==2){
-            (rewardMID * durdur) / decay;
-        }else if(choice ==3){
-            (rewardBOT * durdur) / decay;
+           return (amtClaim[2] * durdur) / decay;
         }
+        return 0;
    }
    
     function mintWithProofTop(bytes32[] memory merkleProof ) public {
@@ -109,23 +118,36 @@ contract AirdropToken {
         
         IERC20(ForgeTokenAddress).transfer(msg.sender,  amountOut(2));
     }
-    
-    function mintWithProofBot(bytes32[] memory merkleProof ) public {
+    //0= 0%-10%, 1= 10%-40%, 2= 50%-90%
+    function mintWithProofALL(bytes32[] memory merkleProof, uint claim ) public {
  
-        require( MerkleProof.verify(merkleProof, _merkleRootBot, keccak256( abi.encodePacked(msg.sender)) ) , 'proof failure');
+        require( verify(merkleProof, msg.sender, claim) ) , 'proof failure');
 
         require(hasClaimed[msg.sender] == false, 'already claimed');
 
         hasClaimed[msg.sender]=true;
        
-
-        IERC20(ForgeTokenAddress).transfer(msg.sender,  amountOut(3));
+        IERC20(ForgeTokenAddress).transfer(msg.sender,  amountOut(claim));
     }
 
+    //verify claim
+    function verify(bytes32[] memory merkleProof, address claimer, uint claim)public view returns (bool ver){
+    if(claim == 0){
+    
+        return MerkleProof.verify(merkleProof, _merkleRootAll[0], keccak256( abi.encodePacked(claimer));
+    }else if(claim ==1 ){
+
+        return MerkleProof.verify(merkleProof, _merkleRootAll[1], keccak256( abi.encodePacked(claimer));
+    }else if(claim == 2){
+    
+        return MerkleProof.verify(merkleProof, _merkleRootAll[2], keccak256( abi.encodePacked(claimer));
+    }
+    return false;
+    }
+    
+    
     function getThree() public view returns (uint256) {
         address owner = ownerOf(tokenId);
-
-        
 
         return 3;
     }
