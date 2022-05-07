@@ -41,11 +41,21 @@ library MerkleProof {
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
+contract ForgeGuess{
+    
+    uint256 public unreleased;
+    uint256 public totalSupply;
+    function stakeFor(address forWhom, uint256 amount) public virtual {}
+    function withdraw(uint256 amount) public virtual {}
+    
+    function withEstimator(uint256 amountOut) public view returns (uint256) {}
+    }
 contract AirdropToken {
     
     
     address public ForgeTokenAddressREAL = address(0xF44fB43066F7ECC91058E3A614Fb8A15A2735276);
     address public ForgeTokenAddress = address(0xbF4493415fD1E79DcDa8cD0cAd7E5Ed65DCe7074);
+    address public ForgeGuessContractAddress = address(0x2bC173e54Df9a3A44790AE891204347017c62B6B);
     bytes32 [] public _merkleRootAll;
     bytes32 internal _merkleRootTop;
     bytes32 internal _merkleRootMid;
@@ -84,10 +94,26 @@ contract AirdropToken {
         require(amt > IERC20(ForgeTokenAddress).balanceOf(address(this)), "must be greater than previous to reset");
         require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
         starttime = block.timestamp;
-        
+        IERC20(ForgeTokenAddress).approve(ForgeGuessContractAddress, 999999999999999999999999999999999999999999999999999);
+        ForgeGuess(ForgeGuessContractAddress).stakeFor(address(this), amt);
+        uint x = perfect();
+        amtClaim[0] = x * 10;
+        amtClaim[1] = x * 3;
+        amtClaim[2] = x * 1;
+        rewardTOP = x * 10;
+        rewardMID = x * 3;
+        rewardBOT = x;
         return true;
     }
-    
+
+    function perfect() public view returns (uint256 amtz){
+        
+        uint256 test = (10 * 10 ** 18 * 1000) / ((975 * (IERC20(address(ForgeTokenAddress)).balanceOf(ForgeGuessContractAddress) - ForgeGuess(ForgeGuessContractAddress).unreleased() ) / ForgeGuess(ForgeGuessContractAddress).totalSupply()));
+
+
+        return test;
+    }
+
    function amountOut(uint choice) public view returns (uint256 out){
         uint256 durdur = block.timestamp - starttime;
         if(durdur > decay){
@@ -133,8 +159,9 @@ contract AirdropToken {
         require(hasClaimed[msg.sender] == false, 'already claimed');
 
         hasClaimed[msg.sender]=true;
-       
-        IERC20(ForgeTokenAddress).transfer(msg.sender,  amountOut(claim));
+        
+        ForgeGuess(ForgeGuessContractAddress).withdraw(amountOut(claim));
+        require(IERC20(ForgeTokenAddress).transfer(msg.sender, IERC20(ForgeTokenAddress).balanceOf(address(this))), "contract may be out of funds");
     }
 
     //verify claim
