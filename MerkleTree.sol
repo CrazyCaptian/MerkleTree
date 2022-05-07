@@ -52,7 +52,7 @@ contract AirdropToken {
                                          
     uint256 [] public amtClaim;
     uint256 internal nextTokenId = 0;
-
+    prevamt = 0;
     mapping(address => bool) public hasClaimed;
     uint256 public decay = 24* 60 * 60 * 30
     uint256 rewardTOP = 100 * 10 ** 18;
@@ -81,6 +81,13 @@ contract AirdropToken {
     /**
     * @dev Mints new NFTs
     */
+    function depo(uint amt) public returns (bool success){
+        require(amt > prevamt, "must be greater than previous to reset");
+        require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
+        prevamt = amt;
+        return true;
+    }
+    
    function amountOut(uint choice) public view returns (uint256 out){.
         uint256 durdur = block.timestamp - starttime;
         if(durdur > decay){
