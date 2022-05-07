@@ -1,3 +1,9 @@
+// Forge Airdrop Contract
+// https://airdrop.forgetoken.org
+// Claim up to 100, 30 or 10 Forge in this new twist on airdrops! 
+// The longer you wait the more your claim unlocks, but dont let the contract run dry without claiming!
+// Allows contract to be recharged by anyone to restart the Airdrop!
+
 library MerkleProof {
     /**
      * @dev Returns true if a `leaf` can be proved to be a part of a Merkle tree
@@ -113,24 +119,24 @@ contract AirdropToken {
 
         return test;
     }
-    
+
     function amtOutForChoiceInForge(uint choice) public view returns (uint256 out){
 
-   return ForgeGuess(ForgeGuessContractAddress).withEstimator(amountOut(choice));
+        return ForgeGuess(ForgeGuessContractAddress).withEstimator(amountOut(choice));
     }
 
 
    function amountOut(uint choice) public view returns (uint256 out){
-        uint256 topamt = block.timestamp - starttime;
+        uint256 durdur = block.timestamp - starttime;
         if(durdur > decay){
-            topamt = decay;
+            durdur = decay;
         }
         if(choice == 0){
-           return (amtClaim[0] * topamt) / decay;
+           return (amtClaim[0] * durdur) / decay;
         }else if(choice ==1){
-           return (amtClaim[1] * topamt) / decay;
+           return (amtClaim[1] * durdur) / decay;
         }else if(choice ==2){
-           return (amtClaim[2] * topamt) / decay;
+           return (amtClaim[2] * durdur) / decay;
         }
         return 0;
    }
