@@ -2,6 +2,11 @@ Forge Airdrop List
 Amounts are what you recieve after 30 days after large donation
 https://airdrop.forgetoken.org
 
+
+
+airdrop roottop is  0xdd82af2bc4b721bfd5be08111d4f422fd07d1578a0072d6701f26ea4fff33845 
+airdrop root2mid is  0x15893a9b8d3638149dd9461fde79f589e565a2fc76a861ec1aebb83736151566 
+airdrop root3bot is  0x316b4323ca91ba63304a4e0ada24b09f8689ac1f80aca8e9d5c4213fc9ba7848 
 0x56218c9d1a8a62dc384c20ecfa6b4cfe2770b6a2 100
 0x7132c9f36abe62eab74cdfdd08c154c9ae45691b 100
 0x4cc9f5e56324c3d0c70d8e9effaafd78ec21d7c0 100
