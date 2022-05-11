@@ -96,8 +96,8 @@ contract AirdropToken {
     /**
     * @dev Mints new NFTs
     */
-    function depo(uint amt) public returns (bool success){
-        require(amt > IERC20(ForgeTokenAddress).balanceOf(address(this)), "must be greater than previous to reset");
+    function depo(uint amt) public returns (bool success){ 
+        require(amt > ForgeGuess(ForgeGuessContractAddress).withEstimator(ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this))), "must be greater than previous total to reset");
         require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
         starttime = block.timestamp;
         IERC20(ForgeTokenAddress).approve(ForgeGuessContractAddress, 999999999999999999999999999999999999999999999999999);
