@@ -113,7 +113,6 @@ contract AirdropToken {
 
     function Donation(uint amt) public returns (bool success){ 
         require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
-        starttime = block.timestamp;
         IERC20(ForgeTokenAddress).approve(ForgeGuessContractAddress, 999999999999999999999999999999999999999999999999999);
         ForgeGuess(ForgeGuessContractAddress).stakeFor(address(this), amt);
         return true;
