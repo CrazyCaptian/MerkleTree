@@ -1,7 +1,7 @@
 // Forge Airdrop Contract
 // https://airdrop.forgetoken.org
 // Claim up to 100, 30 or 10 Forge in this new twist on airdrops! 
-// All Airdrop funds are held in Forge Guess contract until claimed!  Gain or win with the house!
+// All Airdrop funds are held in Forge Guess contract until claimed!  Gain and loose with the house!
 // The longer you wait the more your claim unlocks, but dont let the contract run dry without claiming!
 // Allows contract to be recharged by anyone to restart the Airdrop!
 
