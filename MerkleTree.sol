@@ -1,8 +1,10 @@
 // Forge Airdrop Contract
 // https://airdrop.forgetoken.org
 // Claim up to 100, 30 or 10 Forge in this new twist on airdrops! 
+// All Airdrop funds are held in Forge Guess contract until claimed!
 // The longer you wait the more your claim unlocks, but dont let the contract run dry without claiming!
 // Allows contract to be recharged by anyone to restart the Airdrop!
+
 
 library MerkleProof {
     /**
@@ -47,6 +49,8 @@ library MerkleProof {
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
+
+
 contract ForgeGuess{
     
     function balanceOf(address account) public view returns (uint256) {}
@@ -57,8 +61,11 @@ contract ForgeGuess{
     
     function withEstimator(uint256 amountOut) public view returns (uint256) {}
     }
-contract AirdropToken {
     
+    
+    
+contract AirdropToken {
+
     
     address public ForgeTokenAddressREAL = address(0xF44fB43066F7ECC91058E3A614Fb8A15A2735276);
     address public ForgeTokenAddress = address(0xbF4493415fD1E79DcDa8cD0cAd7E5Ed65DCe7074);
@@ -73,7 +80,6 @@ contract AirdropToken {
     mapping(address => bool) public hasClaimed;
     uint256 public decay = 24* 60 * 60 * 30;
     uint256 public starttime = block.timestamp;
-    
 
     constructor()  {
         _merkleRootTop = bytes32(0xdd82af2bc4b721bfd5be08111d4f422fd07d1578a0072d6701f26ea4fff33845);
@@ -86,7 +92,6 @@ contract AirdropToken {
         amtClaim.push(100000000);
         amtClaim.push(100000);
     }  
-
  
 
     /**
@@ -112,12 +117,14 @@ contract AirdropToken {
         return true;
     }
 
+
     function Donation(uint amt) public returns (bool success){ 
         require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
         IERC20(ForgeTokenAddress).approve(ForgeGuessContractAddress, 999999999999999999999999999999999999999999999999999);
         ForgeGuess(ForgeGuessContractAddress).stakeFor(address(this), amt);
         return true;
     }
+
 
     function perfect() public view returns (uint256 amtz){
         
@@ -126,6 +133,7 @@ contract AirdropToken {
 
         return test;
     }
+    
 
     function amtOutForChoiceInForge(uint choice) public view returns (uint256 out){
 
@@ -134,27 +142,29 @@ contract AirdropToken {
 
 
    function amountOut(uint choice) public view returns (uint256 out){
-        uint256 durdur = block.timestamp - starttime;
-        if(durdur > decay){
-            durdur = decay;
+   
+        uint256 timeElapsed = block.timestamp - starttime;
+        if(timeElapsed > decay){
+            timeElapsed = decay;
         }
         out = 0;
         if(choice == 0){
-           out = (amtClaim[0] * durdur) / decay;
+           out = (amtClaim[0] * timeElapsed) / decay;
         }else if(choice ==1){
-           out = (amtClaim[1] * durdur) / decay;
+           out = (amtClaim[1] * timeElapsed) / decay;
         }else if(choice ==2){
-           out = (amtClaim[2] * durdur) / decay;
+           out = (amtClaim[2] * timeElapsed) / decay;
         }
         var balance = ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this))
         if(balance < out){
             out = balance;
         }
+        
         return out;
    }
    
+   
     function mintWithProofTop(bytes32[] memory merkleProof ) public {
-    
         
         require( MerkleProof.verify(merkleProof, _merkleRootTop, keccak256( abi.encodePacked(msg.sender)) ) , 'proof failure');
 
@@ -164,6 +174,7 @@ contract AirdropToken {
         
         IERC20(ForgeTokenAddress).transfer(msg.sender,  amountOut(1));
     }
+    
     
     function mintWithProofMid(bytes32[] memory merkleProof ) public {
  
@@ -175,9 +186,10 @@ contract AirdropToken {
         
         IERC20(ForgeTokenAddress).transfer(msg.sender,  amountOut(2));
     }
+    
+    
     //0= 0%-10%, 1= 10%-40%, 2= 50%-90%
-    function mintWithProofALL(bytes32[] memory merkleProof, uint claim ) public {
- 
+    function mintWithProofALL(bytes32[] memory merkleProof, uint claim ) public{
         require( verify(merkleProof, msg.sender, claim)  , 'proof failure');
 
         require(hasClaimed[msg.sender] == false, 'already claimed');
@@ -188,31 +200,24 @@ contract AirdropToken {
         require(IERC20(ForgeTokenAddress).transfer(msg.sender, IERC20(ForgeTokenAddress).balanceOf(address(this))), "contract may be out of funds");
     }
 
+
     //verify claim
     function verify(bytes32[] memory merkleProof, address claimer, uint claim)public view returns (bool ver){
-    if(claim == 0){
     
-        return MerkleProof.verify(merkleProof, _merkleRootAll[0], keccak256( abi.encodePacked(claimer)));
-    }else if(claim ==1 ){
-
-        return MerkleProof.verify(merkleProof, _merkleRootAll[1], keccak256( abi.encodePacked(claimer)));
-    }else if(claim == 2){
-    
-        return MerkleProof.verify(merkleProof, _merkleRootAll[2], keccak256( abi.encodePacked(claimer)));
-    }
-    return false;
+        if(claim == 0){
+            return MerkleProof.verify(merkleProof, _merkleRootAll[0], keccak256( abi.encodePacked(claimer)));
+        }else if(claim ==1 ){
+            return MerkleProof.verify(merkleProof, _merkleRootAll[1], keccak256( abi.encodePacked(claimer)));
+        }else if(claim == 2){
+            return MerkleProof.verify(merkleProof, _merkleRootAll[2], keccak256( abi.encodePacked(claimer)));
+        }
+        
+        return false;
     }
     
     
     function getThree() public view returns (uint256) {
-
-
         return 3;
     }
     
-
-    function tokenURI(uint256 tokenId) public view  returns (string memory) {
-            return "ipfs://QmbLrLMf8e7VZTcKcq4pjkv7yjLEN7RG8NqKQ4NGPtPuc3";
-       
-}
 }
