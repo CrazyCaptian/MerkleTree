@@ -85,9 +85,9 @@ contract AirdropToken {
         _merkleRootTop = bytes32(0xdd82af2bc4b721bfd5be08111d4f422fd07d1578a0072d6701f26ea4fff33845);
         _merkleRootMid = bytes32(0x15893a9b8d3638149dd9461fde79f589e565a2fc76a861ec1aebb83736151566);
         _merkleRootBot = bytes32(0x316b4323ca91ba63304a4e0ada24b09f8689ac1f80aca8e9d5c4213fc9ba7848);
-        _merkleRootAll.push(merkleRootTop);
-        _merkleRootAll.push(merkleRootMid);
-        _merkleRootAll.push(merkleRootBot);
+        _merkleRootAll.push(_merkleRootTop);
+        _merkleRootAll.push(_merkleRootTop);
+        _merkleRootAll.push(_merkleRootBot);
         amtClaim.push(1000000000000);
         amtClaim.push(100000000);
         amtClaim.push(100000);
@@ -110,9 +110,6 @@ contract AirdropToken {
             amtClaim[0] = x * 10;
             amtClaim[1] = x * 3;
             amtClaim[2] = x * 1;
-            rewardTOP = x * 10;
-            rewardMID = x * 3;
-            rewardBOT = x;
         }
         return true;
     }
@@ -155,7 +152,7 @@ contract AirdropToken {
         }else if(choice ==2){
            out = (amtClaim[2] * timeElapsed) / decay;
         }
-        var balance = ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this))
+        uint balance = ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this));
         if(balance < out){
             out = balance;
         }
