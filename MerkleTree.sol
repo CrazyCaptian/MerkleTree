@@ -69,7 +69,7 @@ contract AirdropToken {
     
     address public ForgeTokenAddressREAL = address(0xF44fB43066F7ECC91058E3A614Fb8A15A2735276);
     address public ForgeTokenAddress = address(0xbF4493415fD1E79DcDa8cD0cAd7E5Ed65DCe7074);
-    address public ForgeGuessContractAddress = address(0x2bC173e54Df9a3A44790AE891204347017c62B6B);
+    address public ForgeGuessContractAddress = address(0xDe256EC57E864eC847c030e14c5b97AB233A521E);
     bytes32 [] public _merkleRootAll;
     bytes32 internal _merkleRootTop;
     bytes32 internal _merkleRootMid;
