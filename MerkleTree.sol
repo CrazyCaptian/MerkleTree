@@ -49,6 +49,7 @@ library MerkleProof {
 }
 contract ForgeGuess{
     
+    function balanceOf(address account) public view returns (uint256) {}
     uint256 public unreleased;
     uint256 public totalSupply;
     function stakeFor(address forWhom, uint256 amount) public virtual {}
@@ -137,14 +138,19 @@ contract AirdropToken {
         if(durdur > decay){
             durdur = decay;
         }
+        out = 0;
         if(choice == 0){
-           return (amtClaim[0] * durdur) / decay;
+           out = (amtClaim[0] * durdur) / decay;
         }else if(choice ==1){
-           return (amtClaim[1] * durdur) / decay;
+           out = (amtClaim[1] * durdur) / decay;
         }else if(choice ==2){
-           return (amtClaim[2] * durdur) / decay;
+           out = (amtClaim[2] * durdur) / decay;
         }
-        return 0;
+        var balance = ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this))
+        if(balance < out){
+            out = balance;
+        }
+        return out;
    }
    
     function mintWithProofTop(bytes32[] memory merkleProof ) public {
