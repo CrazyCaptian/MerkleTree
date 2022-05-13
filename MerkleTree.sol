@@ -4,6 +4,8 @@
 // The longer you wait the more your claim unlocks, but dont let the contract run dry without claiming!
 // Allows contract to be recharged by anyone to restart the Airdrop!
 
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.7;
 library MerkleProof {
     /**
      * @dev Returns true if a `leaf` can be proved to be a part of a Merkle tree
