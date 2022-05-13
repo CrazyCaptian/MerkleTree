@@ -64,7 +64,7 @@ contract ForgeGuess{
     
     
     
-contract AirdropToken {
+contract ForgeAirdrop {
 
     
     address public ForgeTokenAddressREAL = address(0xF44fB43066F7ECC91058E3A614Fb8A15A2735276);
