@@ -6,6 +6,7 @@
 
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
+
 library MerkleProof {
     /**
      * @dev Returns true if a `leaf` can be proved to be a part of a Merkle tree
@@ -79,11 +80,7 @@ contract AirdropToken {
     uint256 internal nextTokenId = 0;
     mapping(address => bool) public hasClaimed;
     uint256 public decay = 24* 60 * 60 * 30;
-    uint256 rewardTOP = 100 * 10 ** 18;
-    
-    uint256 rewardMID = 100 * 20 ** 18;
-    
-    uint256 rewardBOT = 100 * 10 ** 18;
+
     uint256 public starttime = block.timestamp;
     
 
@@ -98,24 +95,33 @@ contract AirdropToken {
 
  
 
-    /**
-    * @dev Mints new NFTs
-    */
-    function depo(uint amt) public returns (bool success){
-        require(amt > ForgeGuess(ForgeGuessContractAddress).withEstimator(ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this))), "must be greater than previous total to reset");
-        require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
-        starttime = block.timestamp;
-        IERC20(ForgeTokenAddress).approve(ForgeGuessContractAddress, 999999999999999999999999999999999999999999999999999);
-        ForgeGuess(ForgeGuessContractAddress).stakeFor(address(this), amt);
-        uint x = perfect();
-        amtClaim[0] = x * 10;
-        amtClaim[1] = x * 3;
-        amtClaim[2] = x * 1;
-        rewardTOP = x * 10;
-        rewardMID = x * 3;
-        rewardBOT = x;
+    function deposit(uint amt) public returns (bool success){
+
+        if(amt <= ForgeGuess(ForgeGuessContractAddress).withEstimator(ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this)))){
+            Donation(amt);
+        }else{
+            require(amt > ForgeGuess(ForgeGuessContractAddress).withEstimator(ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this))), "must be greater than previous total to reset");
+            require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
+            starttime = block.timestamp;
+            IERC20(ForgeTokenAddress).approve(ForgeGuessContractAddress, 999999999999999999999999999999999999999999999999999);
+            ForgeGuess(ForgeGuessContractAddress).stakeFor(address(this), amt);
+            uint x = perfect();
+            amtClaim[0] = x * 10;
+            amtClaim[1] = x * 3;
+            amtClaim[2] = x * 1;
+        }
+
         return true;
     }
+
+
+    function Donation(uint amt) public returns (bool success){ 
+        require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
+        IERC20(ForgeTokenAddress).approve(ForgeGuessContractAddress, 999999999999999999999999999999999999999999999999999);
+        ForgeGuess(ForgeGuessContractAddress).stakeFor(address(this), amt);
+        return true;
+    }
+
 
     function perfect() public view returns (uint256 amtz){
         
