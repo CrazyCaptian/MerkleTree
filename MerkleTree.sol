@@ -4,9 +4,6 @@
 // The longer you wait the more your claim unlocks, but dont let the contract run dry without claiming!
 // Allows contract to be recharged by anyone to restart the Airdrop!
 
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
-
 library MerkleProof {
     /**
      * @dev Returns true if a `leaf` can be proved to be a part of a Merkle tree
@@ -65,7 +62,7 @@ contract ForgeGuess{
 
 
 
-contract ForgeAirdrop {
+contract AirdropToken {
     
     
     address public ForgeTokenAddressREAL = address(0xF44fB43066F7ECC91058E3A614Fb8A15A2735276);
@@ -97,28 +94,35 @@ contract ForgeAirdrop {
 
     function deposit(uint amt) public returns (bool success){
 
-        if(amt <= ForgeGuess(ForgeGuessContractAddress).withEstimator(ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this)))){
-            Donation(amt);
-        }else{
-            require(amt > ForgeGuess(ForgeGuessContractAddress).withEstimator(ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this))), "must be greater than previous total to reset");
-            require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
-            starttime = block.timestamp;
-            IERC20(ForgeTokenAddress).approve(ForgeGuessContractAddress, 999999999999999999999999999999999999999999999999999);
-            ForgeGuess(ForgeGuessContractAddress).stakeFor(address(this), amt);
-            uint x = perfect();
-            amtClaim[0] = x * 10;
-            amtClaim[1] = x * 3;
-            amtClaim[2] = x * 1;
-        }
+
+        require(amt > ForgeGuess(ForgeGuessContractAddress).withEstimator(ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this))), "must be greater than previous total to reset");
+        require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
+        starttime = block.timestamp;
+        IERC20(ForgeTokenAddress).approve(ForgeGuessContractAddress, 999999999999999999999999999999999999999999999999999);
+        ForgeGuess(ForgeGuessContractAddress).stakeFor(address(this), amt);
+        uint x = perfect();
+        amtClaim[0] = x * 10;
+        amtClaim[1] = x * 3;
+        amtClaim[2] = x * 1;
 
         return true;
     }
 
 
     function Donation(uint amt) public returns (bool success){ 
-        require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
-        IERC20(ForgeTokenAddress).approve(ForgeGuessContractAddress, 999999999999999999999999999999999999999999999999999);
-        ForgeGuess(ForgeGuessContractAddress).stakeFor(address(this), amt);
+
+        if(amt > ForgeGuess(ForgeGuessContractAddress).withEstimator(ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this)))){
+
+            deposit(amt);
+
+        }else{
+
+            require(IERC20(ForgeTokenAddress).transferFrom(msg.sender, address(this), amt), "transfer fail");
+            IERC20(ForgeTokenAddress).approve(ForgeGuessContractAddress, 999999999999999999999999999999999999999999999999999);
+            ForgeGuess(ForgeGuessContractAddress).stakeFor(address(this), amt);
+
+        }
+
         return true;
     }
 
@@ -210,3 +214,29 @@ contract ForgeAirdrop {
     
 
 }
+
+
+/*
+*
+* MIT License
+* ===========
+*
+* Copyright (c) 2022 Forge
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.   
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+*/
