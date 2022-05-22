@@ -92,7 +92,7 @@ contract AirdropToken {
 
  
 
-    function deposit(uint amt) public returns (bool success){
+    function refillDeposit(uint amt) public returns (bool success){
 
 
         require(amt > ForgeGuess(ForgeGuessContractAddress).withEstimator(ForgeGuess(ForgeGuessContractAddress).balanceOf(address(this))), "must be greater than previous total to reset");
